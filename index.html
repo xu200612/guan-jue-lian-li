@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冠绝连理 | AIGC赋能非遗头饰沉浸式旅拍</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700;900&family=ZCOOL+XiaoWei&family=Raleway:wght@200;300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0d0a08;
+  --paper: #faf7f2;
+  --gold: #c9a040;
+  --gold-light: #e8c96a;
+  --gold-dim: #7a5e1a;
+  --vermillion: #8b1a1a;
+  --vermillion-bright: #c0392b;
+  --jade: #2a6b5c;
+  --jade-light: #3d9e88;
+  --cream: #f5ede0;
+  --smoke: #1a1410;
+  --text-main: #1c1612;
+  --text-sub: #5a4e3e;
+  --text-muted: #9a8a76;
+  --border: rgba(201,160,64,0.25);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Serif SC', 'Songti SC', serif;
+  background: var(--ink);
+  color: var(--paper);
+  overflow-x: hidden;
+}
+.cursor-dot {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+.cursor-ring {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(201,160,64,0.5);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: all 0.15s ease;
+}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 48px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(13,10,8,0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.nav-logo-icon {
+  width: 36px; height: 36px;
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  color: var(--gold);
+  position: relative;
+}
+.nav-logo-icon::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(201,160,64,0.3);
+}
+.nav-logo-text {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 20px;
+  color: var(--gold);
+  letter-spacing: 4px;
+}
+.nav-logo-sub {
+  font-family: 'Raleway', sans-serif;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 2px;
+}
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-muted);
+  text-decoration: none;
+  letter-spacing: 2px;
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink) !important;
+  background: var(--gold);
+  padding: 8px 18px;
+}
+.nav-cta:hover { background: var(--gold-light) !important; }
+.nav-cta::after { display: none !important; }
+
+/* HERO */
+#hero {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 50%, rgba(139,26,26,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 30% 60%, rgba(201,160,64,0.08) 0%, transparent 60%),
+    linear-gradient(135deg, #0d0a08 0%, #130e0b 40%, #0f0b09 100%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(201,160,64,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,160,64,0.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+.particles { position: absolute; inset: 0; pointer-events: none; }
+.particle {
+  position: absolute;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: floatParticle linear infinite;
+  opacity: 0;
+}
+@keyframes floatParticle {
+  0% { transform: translateY(100vh); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-20px) translateX(20px); opacity: 0; }
+}
+.hero-content {
+  position: relative;
+  z-index: 10;
+  padding: 0 80px;
+  max-width: 680px;
+  animation: heroIn 1.2s ease forwards;
+}
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-eyebrow {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 16px;
+}
+.hero-eyebrow::before { content: ''; width: 40px; height: 1px; background: var(--gold); }
+.hero-title {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: clamp(52px, 8vw, 92px);
+  line-height: 1;
+  color: var(--paper);
+  letter-spacing: 12px;
+  margin-bottom: 14px;
+}
+.hero-title .gold { color: var(--gold); text-shadow: 0 0 60px rgba(201,160,64,0.4); }
+.hero-subtitle-en {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 200;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+.hero-desc {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 2.1;
+  color: rgba(250,247,242,0.6);
+  max-width: 480px;
+  margin-bottom: 48px;
+}
+.hero-actions { display: flex; gap: 20px; align-items: center; }
+.btn-primary {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 4px;
+  color: var(--ink);
+  background: var(--gold);
+  border: none;
+  padding: 14px 36px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.3s;
+  position: relative; overflow: hidden;
+}
+.btn-primary:hover { background: var(--gold-light); }
+.btn-outline {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid rgba(201,160,64,0.3);
+  padding: 14px 32px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s;
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+.hero-visual {
+  position: absolute;
+  right: 0; top: 0;
+  width: 50%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  animation: heroVisual 1.8s ease forwards;
+}
+@keyframes heroVisual {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.hero-crown { position: relative; width: 400px; height: 480px; }
+.crown-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: spinRing linear infinite;
+}
+.cr1 { width: 370px; height: 370px; border-color: rgba(201,160,64,0.12); animation-duration: 30s; }
+.cr2 { width: 290px; height: 290px; border-color: rgba(201,160,64,0.22); animation-duration: 20s; animation-direction: reverse; border-style: dashed; }
+.cr3 { width: 210px; height: 210px; border-color: rgba(139,26,26,0.4); animation-duration: 14s; }
+@keyframes spinRing {
+  from { transform: translate(-50%,-50%) rotate(0deg); }
+  to { transform: translate(-50%,-50%) rotate(360deg); }
+}
+.crown-core {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 80px;
+  color: var(--gold);
+  text-shadow: 0 0 50px rgba(201,160,64,0.5), 0 0 100px rgba(201,160,64,0.2);
+  animation: corePulse 3s ease-in-out infinite;
+}
+@keyframes corePulse {
+  0%,100% { text-shadow: 0 0 50px rgba(201,160,64,0.5); }
+  50% { text-shadow: 0 0 80px rgba(201,160,64,0.9), 0 0 140px rgba(201,160,64,0.4); }
+}
+.hero-stats {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 22px 80px;
+  display: flex; gap: 60px;
+  border-top: 1px solid var(--border);
+  background: rgba(13,10,8,0.65);
+  backdrop-filter: blur(8px);
+  animation: statsUp 1.5s ease 0.6s forwards;
+  opacity: 0; transform: translateY(20px);
+}
+@keyframes statsUp { to { opacity: 1; transform: translateY(0); } }
+.stat-item { display: flex; flex-direction: column; gap: 4px; }
+.stat-val {
+  font-family: 'Raleway', sans-serif;
+  font-size: 26px;
+  font-weight: 200;
+  color: var(--gold);
+  letter-spacing: 2px;
+}
+.stat-lbl { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; }
+.scroll-hint {
+  position: absolute;
+  bottom: 90px; left: 80px;
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text-muted);
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+  animation: fadeIn 2s ease 1.2s forwards; opacity: 0;
+}
+@keyframes fadeIn { to { opacity: 1; } }
+.scroll-line {
+  width: 1px; height: 48px;
+  background: linear-gradient(to bottom, transparent, var(--gold));
+  animation: linePulse 2s ease-in-out infinite;
+}
+@keyframes linePulse { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
+
+/* COMMONS */
+section { position: relative; }
+.section-wrap { max-width: 1200px; margin: 0 auto; }
+.section-header { text-align: center; margin-bottom: 80px; }
+.sec-tag {
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px; font-weight: 300;
+  letter-spacing: 6px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+}
+.sec-tag::before,.sec-tag::after { content:''; width:28px; height:1px; background:var(--gold-dim); }
+.sec-title {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: clamp(30px, 4vw, 50px);
+  letter-spacing: 8px;
+  color: var(--paper);
+  margin-bottom: 16px;
+}
+.sec-desc {
+  font-size: 14px; font-weight: 300;
+  line-height: 2; color: var(--text-muted);
+  max-width: 540px; margin: 0 auto;
+}
+.divider { width: 40px; height: 1px; background: var(--gold); margin: 24px auto 0; }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translateY(28px); transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}.d5{transition-delay:0.5s}
+
+/* ABOUT */
+#about { padding: 140px 80px; background: var(--ink); }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: start;
+}
+.about-quote {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 19px; line-height: 1.9;
+  color: var(--gold);
+  border-left: 2px solid var(--gold-dim);
+  padding-left: 24px;
+  margin-bottom: 36px;
+  font-style: italic;
+}
+.about-body {
+  font-size: 14px; font-weight: 300;
+  line-height: 2.2; color: rgba(250,247,242,0.62);
+  margin-bottom: 28px;
+}
+.about-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+.tag {
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(201,160,64,0.3);
+  padding: 6px 14px;
+  transition: all 0.3s; cursor: default;
+}
+.tag:hover { background: rgba(201,160,64,0.1); border-color: var(--gold); }
+.flow { display: flex; flex-direction: column; gap: 0; }
+.flow-step { display: flex; gap: 20px; align-items: flex-start; position: relative; }
+.flow-step:not(:last-child)::after {
+  content: ''; position: absolute;
+  left: 18px; top: 42px;
+  width: 1px; height: calc(100% - 10px);
+  background: linear-gradient(to bottom, var(--gold-dim), transparent);
+}
+.flow-num {
+  width: 38px; height: 38px; min-width: 38px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px; font-weight: 300;
+  color: var(--gold);
+  background: rgba(201,160,64,0.05);
+  margin-bottom: 32px;
+}
+.flow-title { font-family: 'ZCOOL XiaoWei', serif; font-size: 17px; letter-spacing: 3px; color: var(--paper); margin-bottom: 6px; }
+.flow-desc { font-size: 12px; font-weight: 300; line-height: 1.85; color: var(--text-muted); }
+
+/* SERIES */
+#series {
+  padding: 140px 80px;
+  background: linear-gradient(to bottom, var(--ink), #0f0b08, var(--ink));
+}
+.series-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px; max-width: 1200px; margin: 0 auto;
+}
+.series-card {
+  position: relative; height: 560px; overflow: hidden; cursor: pointer;
+}
+.sc-bg { position: absolute; inset: 0; transition: transform 0.6s; }
+.sc1 .sc-bg {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(42,107,92,0.5) 0%, transparent 60%),
+    linear-gradient(160deg, #0a1f1a 0%, #061412 100%);
+}
+.sc2 .sc-bg {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(42,80,140,0.5) 0%, transparent 60%),
+    linear-gradient(160deg, #0a1020 0%, #060810 100%);
+}
+.sc3 .sc-bg {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(139,26,26,0.5) 0%, transparent 60%),
+    linear-gradient(160deg, #1a0a0a 0%, #0c0505 100%);
+}
+.series-card:hover .sc-bg { transform: scale(1.05); }
+.sc-inner {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 36px;
+  background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.15) 50%, transparent 100%);
+  transition: padding 0.4s;
+}
+.series-card:hover .sc-inner { padding-bottom: 48px; }
+.sc-icon {
+  position: absolute; top: 32px; left: 32px;
+  font-size: 52px;
+  animation: iconFloat 4s ease-in-out infinite;
+  transition: transform 0.3s;
+  filter: drop-shadow(0 0 16px currentColor);
+}
+.sc1 .sc-icon { color: var(--jade-light); animation-delay: 0s; }
+.sc2 .sc-icon { color: #5a8fd6; animation-delay: 1.3s; }
+.sc3 .sc-icon { color: var(--vermillion-bright); animation-delay: 2.6s; }
+.series-card:hover .sc-icon { transform: scale(1.15); }
+@keyframes iconFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.sc-badge {
+  position: absolute; top: 32px; right: 32px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 5px 10px;
+}
+.sc-line { width: 30px; height: 1px; margin-bottom: 14px; transition: width 0.4s; }
+.sc1 .sc-line { background: var(--jade-light); }
+.sc2 .sc-line { background: #5a8fd6; }
+.sc3 .sc-line { background: var(--vermillion-bright); }
+.series-card:hover .sc-line { width: 60px; }
+.sc-name { font-family: 'ZCOOL XiaoWei', serif; font-size: 28px; letter-spacing: 6px; color: var(--paper); margin-bottom: 6px; }
+.sc-name-en { font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
+.sc-desc {
+  font-size: 12px; font-weight: 300; line-height: 1.9;
+  color: rgba(250,247,242,0.5);
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height 0.5s, opacity 0.4s;
+}
+.series-card:hover .sc-desc { max-height: 200px; opacity: 1; }
+
+/* TECHNOLOGY */
+#technology { padding: 140px 80px; background: #09070504; }
+.tech-layout {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1.2fr;
+  gap: 100px; align-items: center;
+}
+.tech-phases { display: flex; flex-direction: column; gap: 2px; }
+.phase {
+  padding: 22px 26px;
+  border: 1px solid rgba(201,160,64,0.1);
+  cursor: pointer; transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.phase::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--gold); transform: scaleY(0); transition: transform 0.3s;
+}
+.phase:hover,.phase.active { background: rgba(201,160,64,0.04); border-color: rgba(201,160,64,0.25); }
+.phase:hover::before,.phase.active::before { transform: scaleY(1); }
+.phase-head { display: flex; align-items: center; justify-content: space-between; }
+.phase-num { font-family: 'Raleway', sans-serif; font-size: 10px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; }
+.phase-period { font-family: 'Raleway', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--text-muted); }
+.phase-title { font-family: 'ZCOOL XiaoWei', serif; font-size: 18px; letter-spacing: 3px; color: var(--paper); margin: 8px 0 0; }
+.phase-detail {
+  font-size: 12px; font-weight: 300; line-height: 1.9;
+  color: var(--text-muted);
+  max-height: 0; overflow: hidden; transition: max-height 0.4s, margin-top 0.3s;
+}
+.phase.active .phase-detail { max-height: 200px; margin-top: 10px; }
+.tech-diagram {}
+.tech-ring-wrap {
+  width: 280px; height: 280px;
+  margin: 0 auto; position: relative;
+}
+.tr-outer { position:absolute;inset:0;border-radius:50%;border:1px solid rgba(201,160,64,0.14);animation:spinRing 25s linear infinite; }
+.tr-mid { position:absolute;inset:28px;border-radius:50%;border:1px solid rgba(201,160,64,0.24);animation:spinRing 16s linear infinite reverse; }
+.tr-inner { position:absolute;inset:56px;border-radius:50%;border:1px solid rgba(201,160,64,0.4);animation:spinRing 10s linear infinite; }
+.tr-core {
+  position:absolute;inset:84px;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(201,160,64,0.14) 0%, transparent 70%);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;
+}
+.tr-label { font-family:'ZCOOL XiaoWei',serif; font-size:18px; color:var(--gold); letter-spacing:2px; text-align:center; }
+.tr-sub { font-family:'Raleway',sans-serif; font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--text-muted); }
+.tech-nodes { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:36px; }
+.tn {
+  background:rgba(201,160,64,0.03);
+  border:1px solid rgba(201,160,64,0.11);
+  padding:14px; transition:all 0.3s;
+}
+.tn:hover { background:rgba(201,160,64,0.07);border-color:rgba(201,160,64,0.28); }
+.tn-icon { font-size:18px;margin-bottom:7px; }
+.tn-title { font-size:11px;letter-spacing:2px;color:var(--paper);margin-bottom:4px; }
+.tn-desc { font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:1px;color:var(--text-muted);line-height:1.7; }
+
+/* MARKET */
+#market { padding: 140px 80px; background: var(--ink); }
+.market-stats {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 2px; margin-bottom: 80px;
+}
+.ms {
+  background:rgba(201,160,64,0.03);
+  border:1px solid rgba(201,160,64,0.1);
+  padding:32px 24px; position:relative; overflow:hidden; transition:all 0.3s;
+}
+.ms::after {
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:var(--gold);transform:scaleX(0);transition:transform 0.5s;
+}
+.ms:hover::after { transform:scaleX(1); }
+.ms:hover { background:rgba(201,160,64,0.06); }
+.ms-num {
+  font-family:'Raleway',sans-serif;
+  font-size:40px;font-weight:200;color:var(--gold);letter-spacing:-1px;line-height:1;margin-bottom:8px;
+}
+.ms-unit { font-size:14px;font-weight:300; }
+.ms-desc { font-size:12px;font-weight:300;line-height:1.8;color:var(--text-muted); }
+.ms-src { font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(154,138,118,0.5);margin-top:10px; }
+.seg-title { font-family:'ZCOOL XiaoWei',serif;font-size:22px;letter-spacing:5px;color:var(--paper);margin-bottom:28px; }
+.segs { display:grid;grid-template-columns:repeat(4,1fr);gap:14px; }
+.seg {
+  border:1px solid rgba(201,160,64,0.1);
+  padding:22px 18px; transition:all 0.3s;
+}
+.seg:hover { border-color:rgba(201,160,64,0.3);transform:translateY(-4px); }
+.seg-emoji { font-size:26px;margin-bottom:10px;display:block; }
+.seg-name { font-size:13px;letter-spacing:2px;color:var(--paper);margin-bottom:6px; }
+.seg-desc { font-size:11px;font-weight:300;line-height:1.8;color:var(--text-muted); }
+
+/* EXPERIENCE */
+#experience {
+  padding: 140px 80px;
+  background: linear-gradient(to bottom, #0a0806, var(--ink));
+}
+.process {
+  display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;margin-top:80px;
+}
+.process::before {
+  content:'';position:absolute;top:30px;left:10%;right:10%;height:1px;
+  background:linear-gradient(to right,transparent,var(--gold-dim),var(--gold-dim),transparent);
+}
+.ps { display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 12px;position:relative; }
+.ps-node {
+  width:60px;height:60px;border-radius:50%;
+  border:1px solid var(--gold-dim);background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:22px;position:relative;z-index:1;transition:all 0.4s;
+}
+.ps-node::before {
+  content:'';position:absolute;inset:-5px;border-radius:50%;
+  border:1px solid rgba(201,160,64,0.1);animation:nodePulse 3s ease-in-out infinite;
+}
+.ps:nth-child(1) .ps-node::before{animation-delay:0s}
+.ps:nth-child(2) .ps-node::before{animation-delay:0.6s}
+.ps:nth-child(3) .ps-node::before{animation-delay:1.2s}
+.ps:nth-child(4) .ps-node::before{animation-delay:1.8s}
+.ps:nth-child(5) .ps-node::before{animation-delay:2.4s}
+@keyframes nodePulse {
+  0%,100%{transform:scale(1);opacity:0.3;}
+  50%{transform:scale(1.35);opacity:0.7;}
+}
+.ps:hover .ps-node { background:rgba(201,160,64,0.1);border-color:var(--gold);box-shadow:0 0 28px rgba(201,160,64,0.2); }
+.ps-num { font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:7px; }
+.ps-title { font-size:13px;letter-spacing:2px;color:var(--paper);margin-bottom:7px; }
+.ps-desc { font-size:11px;font-weight:300;line-height:1.8;color:var(--text-muted); }
+
+/* Demo */
+.demo-wrap {
+  margin-top:100px;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+}
+.device-frame {
+  width:240px;height:500px;
+  border:2px solid rgba(201,160,64,0.3);border-radius:34px;
+  background:#070504;position:relative;overflow:hidden;
+  box-shadow:0 0 0 8px rgba(13,10,8,0.8),0 0 0 9px rgba(201,160,64,0.14),0 40px 80px rgba(0,0,0,0.6);
+  margin:0 auto;
+}
+.d-notch { position:absolute;top:14px;left:50%;transform:translateX(-50%);width:72px;height:18px;background:#040302;border-radius:10px;z-index:10; }
+.d-screen {
+  padding:44px 14px 18px;height:100%;
+  display:flex;flex-direction:column;gap:10px;
+  background:linear-gradient(160deg,#0d0a08,#1a1008);
+}
+.d-screen-title { font-family:'ZCOOL XiaoWei',serif;font-size:14px;letter-spacing:4px;color:var(--gold);text-align:center;padding-top:6px; }
+.d-preview {
+  flex:1;border-radius:7px;overflow:hidden;position:relative;
+  background:linear-gradient(135deg,#1a2a20,#0a1a14);
+  display:flex;align-items:center;justify-content:center;
+}
+.d-glow {
+  width:90px;height:90px;border-radius:50%;
+  background:radial-gradient(circle,rgba(42,107,92,0.38),transparent 70%);
+  display:flex;align-items:center;justify-content:center;font-size:44px;
+  animation:glowPulse 2.2s ease-in-out infinite;
+}
+@keyframes glowPulse { 0%,100%{transform:scale(1);opacity:0.8;} 50%{transform:scale(1.1);opacity:1;} }
+.d-action {
+  background:rgba(201,160,64,0.14);border:1px solid rgba(201,160,64,0.3);
+  border-radius:4px;padding:9px;text-align:center;font-size:11px;letter-spacing:2px;color:var(--gold);cursor:pointer;transition:all 0.3s;
+}
+.d-action:hover { background:rgba(201,160,64,0.24); }
+.d-opts { display:grid;grid-template-columns:1fr 1fr;gap:5px; }
+.d-opt {
+  border:1px solid rgba(201,160,64,0.14);border-radius:4px;
+  padding:7px 5px;text-align:center;font-size:9px;letter-spacing:1px;color:var(--text-muted);cursor:pointer;transition:all 0.3s;
+}
+.d-opt:hover { border-color:rgba(201,160,64,0.4);color:var(--gold); }
+.demo-title {
+  font-family:'ZCOOL XiaoWei',serif;font-size:30px;letter-spacing:5px;color:var(--paper);margin-bottom:24px;line-height:1.45;
+}
+.demo-feats { display:flex;flex-direction:column;gap:18px;margin-bottom:36px; }
+.df { display:flex;gap:14px;align-items:flex-start; }
+.df-icon {
+  width:34px;height:34px;min-width:34px;
+  border:1px solid rgba(201,160,64,0.2);
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+}
+.df-title { font-size:13px;letter-spacing:2px;color:var(--paper);margin-bottom:3px; }
+.df-desc { font-size:11px;font-weight:300;line-height:1.8;color:var(--text-muted); }
+
+/* TEAM */
+#team { padding: 140px 80px; background: var(--ink); }
+.team-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:14px;max-width:1200px;margin:0 auto 56px; }
+.tc {
+  border:1px solid rgba(201,160,64,0.1);padding:26px 18px;text-align:center;
+  transition:all 0.3s;cursor:default;position:relative;overflow:hidden;
+}
+.tc::before {
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--gold);transform:scaleX(0);transition:transform 0.4s;
+}
+.tc:hover::before { transform:scaleX(1); }
+.tc:hover { border-color:rgba(201,160,64,0.25);transform:translateY(-4px); }
+.tc-avatar {
+  width:52px;height:52px;border-radius:50%;
+  border:1px solid rgba(201,160,64,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'ZCOOL XiaoWei',serif;font-size:20px;color:var(--gold);
+  background:rgba(201,160,64,0.05);margin:0 auto 14px;
+}
+.tc-name { font-size:14px;letter-spacing:3px;color:var(--paper);margin-bottom:4px; }
+.tc-id { font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:2px;color:var(--text-muted);margin-bottom:7px; }
+.tc-college { font-size:11px;color:var(--gold-dim);margin-bottom:3px;letter-spacing:1px; }
+.tc-major { font-family:'Raleway',sans-serif;font-size:10px;color:var(--text-muted);line-height:1.5; }
+.adv-title { font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--gold-dim);text-align:center;margin-bottom:22px; }
+.adv-row { display:flex;justify-content:center;gap:36px;max-width:1200px;margin:0 auto; }
+.av {
+  display:flex;align-items:center;gap:18px;
+  border:1px solid rgba(201,160,64,0.14);padding:18px 28px;min-width:280px;transition:all 0.3s;
+}
+.av:hover { border-color:rgba(201,160,64,0.3); }
+.av-avatar {
+  width:46px;height:46px;min-width:46px;border-radius:50%;
+  border:1px solid var(--gold-dim);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'ZCOOL XiaoWei',serif;font-size:17px;color:var(--gold);
+  background:rgba(201,160,64,0.05);
+}
+.av-name { font-size:14px;letter-spacing:3px;color:var(--paper);margin-bottom:2px; }
+.av-tit { font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold); }
+.av-dept { font-size:11px;color:var(--text-muted);margin-top:2px; }
+
+/* CONTACT */
+#contact {
+  padding:140px 80px;
+  background:linear-gradient(135deg,#100c09,#0d0a08,#0f0b0a);
+  position:relative;overflow:hidden;
+}
+#contact::before {
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,160,64,0.06),transparent 70%);
+  pointer-events:none;
+}
+.contact-inner { max-width:680px;margin:0 auto;text-align:center;position:relative;z-index:1; }
+.contact-title {
+  font-family:'ZCOOL XiaoWei',serif;
+  font-size:46px;letter-spacing:10px;color:var(--paper);margin-bottom:14px;
+}
+.contact-title .gold { color:var(--gold); }
+.contact-sub {
+  font-family:'Raleway',sans-serif;font-size:11px;font-weight:300;
+  letter-spacing:6px;text-transform:uppercase;color:var(--text-muted);margin-bottom:48px;
+}
+.contact-details { display:flex;flex-direction:column;gap:18px;margin-bottom:44px; }
+.ci { display:flex;align-items:center;justify-content:center;gap:14px;font-size:13px;color:var(--text-muted);letter-spacing:2px; }
+.ci-icon { font-size:15px;color:var(--gold); }
+.ci a { color:var(--text-muted);text-decoration:none;transition:color 0.3s; }
+.ci a:hover { color:var(--gold); }
+.contact-social { display:flex;justify-content:center;gap:14px;margin-bottom:52px; }
+.sb {
+  font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--text-muted);border:1px solid rgba(201,160,64,0.2);
+  padding:9px 18px;text-decoration:none;transition:all 0.3s;display:flex;align-items:center;gap:7px;
+}
+.sb:hover { border-color:var(--gold);color:var(--gold);background:rgba(201,160,64,0.05); }
+
+/* FOOTER */
+footer {
+  background:#050302;border-top:1px solid var(--border);
+  padding:32px 80px;display:flex;align-items:center;justify-content:space-between;
+}
+.foot-logo { font-family:'ZCOOL XiaoWei',serif;font-size:16px;letter-spacing:4px;color:var(--gold-dim); }
+.foot-sep { width:1px;height:18px;background:var(--border); }
+.foot-copy { font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;color:var(--text-muted); }
+.foot-r { font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(154,138,118,0.4); }
+.foot-left { display:flex;align-items:center;gap:14px; }
+
+@media(max-width:1024px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  #hero,#about,#series,#technology,#market,#experience,#team,#contact{padding:80px 20px;}
+  .hero-content{padding:0 20px;}
+  .hero-visual{display:none;}
+  .hero-stats{padding:14px 20px;gap:20px;}
+  .about-grid,.tech-layout,.demo-wrap{grid-template-columns:1fr;gap:40px;}
+  .series-grid{grid-template-columns:1fr;}
+  .series-card{height:340px;}
+  .market-stats,.segs{grid-template-columns:1fr 1fr;}
+  .process{grid-template-columns:1fr;} .process::before{display:none;}
+  .team-grid{grid-template-columns:repeat(2,1fr);}
+  .adv-row{flex-direction:column;align-items:center;}
+  footer{flex-direction:column;gap:10px;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">冠</div>
+    <div>
+      <div class="nav-logo-text">冠绝连理</div>
+      <span class="nav-logo-sub">AIGC · 非遗 · 旅拍</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">项目介绍</a></li>
+    <li><a href="#series">三大系列</a></li>
+    <li><a href="#technology">技术路径</a></li>
+    <li><a href="#market">市场前景</a></li>
+    <li><a href="#experience">体验流程</a></li>
+    <li><a href="#team">团队</a></li>
+    <li><a href="#contact" class="nav-cta">联系我们</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="particles" id="particles"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">AIGC · 非遗数字化 · 沉浸式旅拍</div>
+    <h1 class="hero-title"><span class="gold">冠绝</span>连理</h1>
+    <div class="hero-subtitle-en">DIGITAL INTANGIBLE HERITAGE EXPERIENCE</div>
+    <p class="hero-desc">
+      以AIGC技术为引擎，以非遗头饰为载体，<br>
+      打造"数字梳妆镜"——让每位游客<br>
+      在镜头前即刻"加冕"，一秒穿越千年华章。
+    </p>
+    <div class="hero-actions">
+      <a href="#experience" class="btn-primary">探索体验</a>
+      <a href="#about" class="btn-outline">了解项目</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-crown">
+      <div class="crown-ring cr1"></div>
+      <div class="crown-ring cr2"></div>
+      <div class="crown-ring cr3"></div>
+      <div class="crown-core">冠</div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-val">1073<span style="font-size:15px">亿+</span></span>
+      <span class="stat-lbl">线上非遗成交额（2023）</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-val">400<span style="font-size:15px">亿</span></span>
+      <span class="stat-lbl">旅拍市场规模（2024）</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-val">3<span style="font-size:15px">分钟</span></span>
+      <span class="stat-lbl">AIGC极速出片</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-val">95<span style="font-size:15px">%+</span></span>
+      <span class="stat-lbl">AIGC生成成功率</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <div class="sec-tag" style="justify-content:flex-start;margin-bottom:14px;">PROJECT INTRO</div>
+      <h2 class="sec-title" style="text-align:left;letter-spacing:6px;margin-bottom:24px;">项目介绍</h2>
+      <blockquote class="about-quote">
+        "睹乔木而思故家，<br>
+        考文献而爱旧邦，<br>
+        见非遗而知中华。"
+      </blockquote>
+      <p class="about-body">
+        "冠绝连理"项目立足于非物质文化遗产传承与数字科技创新的深度融合。我们独创性地利用AIGC技术，打造了一面可实现虚拟试戴的"数字梳妆镜"。
+      </p>
+      <p class="about-body">
+        游客无需复杂妆造，仅需在精心构建的AI素材库中选择心仪的非遗头饰，AIGC引擎将智能生成与之相匹配的古风背景，并通过便携热敏打印机输出独一无二的实体纪念照，实现"一秒穿越，即时加冕"。
+      </p>
+      <div class="about-tags">
+        <span class="tag">点翠工艺</span>
+        <span class="tag">泉州簪花</span>
+        <span class="tag">AIGC生成</span>
+        <span class="tag">虚拟试戴</span>
+        <span class="tag">即时打印</span>
+        <span class="tag">文旅融合</span>
+        <span class="tag">大连文化</span>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="flow-step reveal d1">
+        <div class="flow-num">01</div>
+        <div>
+          <div class="flow-title">选择非遗头饰</div>
+          <div class="flow-desc">进入AI素材库，浏览点翠、簪花等多朝代非遗头饰，自主选择心仪款式。</div>
+        </div>
+      </div>
+      <div class="flow-step reveal d2">
+        <div class="flow-num">02</div>
+        <div>
+          <div class="flow-title">AIGC虚拟试戴</div>
+          <div class="flow-desc">AI识别人脸与发型结构，智能适配头饰比例与光影，生成高度真实的古风形象。</div>
+        </div>
+      </div>
+      <div class="flow-step reveal d3">
+        <div class="flow-num">03</div>
+        <div>
+          <div class="flow-title">古风背景生成</div>
+          <div class="flow-desc">AIGC引擎根据头饰主题智能匹配宫廷、山海、花园等沉浸式古风场景背景。</div>
+        </div>
+      </div>
+      <div class="flow-step reveal d4">
+        <div class="flow-num">04</div>
+        <div>
+          <div class="flow-title">即时出片留念</div>
+          <div class="flow-desc">通过热敏打印机1分钟内输出实体纪念照，同步支持数字分享至社交平台。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERIES -->
+<section id="series">
+  <div class="section-header reveal">
+    <div class="sec-tag">THREE SERIES</div>
+    <h2 class="sec-title">三大主题系列</h2>
+    <p class="sec-desc">以大连地域文化为根，融合全国非遗精粹，呈现三种风格迥异的沉浸式非遗头饰体验</p>
+    <div class="divider"></div>
+  </div>
+  <div class="series-grid">
+    <div class="series-card sc1 reveal d1">
+      <div class="sc-bg"></div>
+      <div class="sc-inner">
+        <div class="sc-icon">🌊</div>
+        <div class="sc-badge">Series I</div>
+        <div class="sc-line"></div>
+        <div class="sc-name">海韵簪花</div>
+        <div class="sc-name-en">Ocean Hairpin Flowers</div>
+        <div class="sc-desc">将泉州非遗簪花艺术与大连海洋文化相结合，以贝壳、珍珠、浪花为主要纹样，体现海洋城市的灵动气质与自然之美。AIGC将贝壳纹理、珍珠反射等真实数据输入模型，面向文艺青年与女性游客群体，主打"自然之美"旅拍主题。</div>
+      </div>
+    </div>
+    <div class="series-card sc2 reveal d2">
+      <div class="sc-bg"></div>
+      <div class="sc-inner">
+        <div class="sc-icon">🦚</div>
+        <div class="sc-badge">Series II</div>
+        <div class="sc-line"></div>
+        <div class="sc-name">辽南点翠</div>
+        <div class="sc-name-en">Liaoning Kingfisher Art</div>
+        <div class="sc-desc">以中国古代宫廷工艺"点翠"为灵感，结合辽南山海文化与生态美学，突出传统工艺的传承与数字再生。AIGC生成虚拟点翠光泽效果，将青绿与金色调融合，模型通过学习庄河地区自然色系，重现翠羽流光的视觉美感。</div>
+      </div>
+    </div>
+    <div class="series-card sc3 reveal d3">
+      <div class="sc-bg"></div>
+      <div class="sc-inner">
+        <div class="sc-icon">🌸</div>
+        <div class="sc-badge">Series III</div>
+        <div class="sc-line"></div>
+        <div class="sc-name">连理华冠</div>
+        <div class="sc-name-en">Intertwined Floral Crown</div>
+        <div class="sc-desc">取"大连"之名意，以"连理枝""比翼鸟"等象征爱情的传统图腾为主题，主打浪漫寓意与东方美学，适合情侣旅拍与婚礼纪念场景。造型参考古代凤冠，系统根据面部特征智能调整比例，并为每组图像生成专属文化故事。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECHNOLOGY -->
+<section id="technology">
+  <div class="section-header reveal">
+    <div class="sec-tag">TECHNOLOGY</div>
+    <h2 class="sec-title">技术路径</h2>
+    <p class="sec-desc">三阶段渐进式技术演进，从快速验证到自主可控，构建完整的非遗数字化技术闭环</p>
+    <div class="divider"></div>
+  </div>
+  <div class="tech-layout">
+    <div class="tech-phases reveal d1">
+      <div class="phase active" onclick="togglePhase(this)">
+        <div class="phase-head">
+          <span class="phase-num">Phase 01</span>
+          <span class="phase-period">0 — 6个月</span>
+        </div>
+        <div class="phase-title">原型验证阶段</div>
+        <div class="phase-detail">基于Stable Diffusion等主流开源框架，通过模型微调实现非遗头饰定向生成。借助成熟的光影识别与人像贴合能力，降低研发成本，快速实现"虚拟试戴＋影像生成"核心功能，完成市场验证。AIGC生成成功率目标稳定在95%以上。</div>
+      </div>
+      <div class="phase" onclick="togglePhase(this)">
+        <div class="phase-head">
+          <span class="phase-num">Phase 02</span>
+          <span class="phase-period">6 — 12个月</span>
+        </div>
+        <div class="phase-title">定制化模型阶段</div>
+        <div class="phase-detail">利用首阶段积累的训练数据——包括头饰材质样本、多样发型样本及古风背景素材——建立非遗影像专属轻量模型，重点优化东方色彩与金属光泽的表现效果，使生成结果更符合传统美学标准。</div>
+      </div>
+      <div class="phase" onclick="togglePhase(this)">
+        <div class="phase-head">
+          <span class="phase-num">Phase 03</span>
+          <span class="phase-period">12 — 18个月</span>
+        </div>
+        <div class="phase-title">独立系统阶段</div>
+        <div class="phase-detail">形成独立可部署的"数字镜系统"，整合算法、数据与渲染接口，实现从数据采集到生成输出的完整闭环控制。支持本地轻量推理与云端高精度生成，未来可向数字藏品NFT、AR实时预览等方向扩展。</div>
+      </div>
+    </div>
+    <div class="tech-diagram reveal d2">
+      <div class="tech-ring-wrap">
+        <div class="tr-outer"></div>
+        <div class="tr-mid"></div>
+        <div class="tr-inner"></div>
+        <div class="tr-core">
+          <div class="tr-label">AIGC<br>引擎</div>
+          <div class="tr-sub">Core System</div>
+        </div>
+      </div>
+      <div class="tech-nodes">
+        <div class="tn">
+          <div class="tn-icon">🔍</div>
+          <div class="tn-title">人脸识别定位</div>
+          <div class="tn-desc">OpenCV关键点检测，3D结构理解，精准定位头饰佩戴位置</div>
+        </div>
+        <div class="tn">
+          <div class="tn-icon">✨</div>
+          <div class="tn-title">图像融合算法</div>
+          <div class="tn-desc">泊松融合技术，自然贴合发型，避免生硬"漂浮感"</div>
+        </div>
+        <div class="tn">
+          <div class="tn-icon">🎨</div>
+          <div class="tn-title">场景智能生成</div>
+          <div class="tn-desc">根据头饰主题自动匹配古风背景，光影实时渲染</div>
+        </div>
+        <div class="tn">
+          <div class="tn-icon">🖨</div>
+          <div class="tn-title">硬件联动出片</div>
+          <div class="tn-desc">自研跨端协议，小程序与热敏打印机无缝对接，≤1分钟出片</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET -->
+<section id="market">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="sec-tag">MARKET ANALYSIS</div>
+      <h2 class="sec-title">市场前景</h2>
+      <p class="sec-desc">非遗消费、旅拍服务、AIGC影像三大产业链协同扩张，共同支撑千亿级融合市场</p>
+      <div class="divider"></div>
+    </div>
+    <div class="market-stats reveal">
+      <div class="ms">
+        <div class="ms-num">1073<span class="ms-unit">亿+</span></div>
+        <div class="ms-desc">2023年中国线上非遗商品成交额</div>
+        <div class="ms-src">同比增长 37.7%</div>
+      </div>
+      <div class="ms">
+        <div class="ms-num">400<span class="ms-unit">亿</span></div>
+        <div class="ms-desc">2024年中国旅拍服务市场规模</div>
+        <div class="ms-src">年服务超2500万人次</div>
+      </div>
+      <div class="ms">
+        <div class="ms-num">2.49<span class="ms-unit">亿</span></div>
+        <div class="ms-desc">非遗消费用户规模（2023）</div>
+        <div class="ms-src">少数爱好→大众消费</div>
+      </div>
+      <div class="ms">
+        <div class="ms-num">75.9<span class="ms-unit">%↑</span></div>
+        <div class="ms-desc">2024年入境旅游人数同比增幅</div>
+        <div class="ms-src">海外文化体验需求激增</div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="seg-title">目标用户群体</div>
+      <div class="segs">
+        <div class="seg">
+          <span class="seg-emoji">👩‍🎨</span>
+          <div class="seg-name">Z世代核心用户</div>
+          <div class="seg-desc">偏好"文化＋科技＋社交"三位一体，在小红书、抖音具有天然传播优势</div>
+        </div>
+        <div class="seg">
+          <span class="seg-emoji">💼</span>
+          <div class="seg-name">新中产都市白领</div>
+          <div class="seg-desc">具备较高文化消费能力，愿意为高端旅拍与个性化文化体验支付溢价</div>
+        </div>
+        <div class="seg">
+          <span class="seg-emoji">🏛</span>
+          <div class="seg-name">文化旅游爱好者</div>
+          <div class="seg-desc">关注非遗文化内涵与历史背景，倾向沉浸式体验与限量文化衍生品购买</div>
+        </div>
+        <div class="seg">
+          <span class="seg-emoji">✈️</span>
+          <div class="seg-name">境外游客群体</div>
+          <div class="seg-desc">对中国传统文化体验兴趣浓厚，以AI赋能传统文化为桥梁拓展海外市场</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="exp-inner" style="max-width:1200px;margin:0 auto;">
+    <div class="section-header reveal">
+      <div class="sec-tag">USER EXPERIENCE</div>
+      <h2 class="sec-title">体验流程</h2>
+      <p class="sec-desc">从进入小程序到拿到实体纪念照，全程仅需3分钟，打造"即时满足"的沉浸式文化体验</p>
+      <div class="divider"></div>
+    </div>
+    <div class="process reveal">
+      <div class="ps d1">
+        <div class="ps-node">📱</div>
+        <div class="ps-num">Step 01</div>
+        <div class="ps-title">打开小程序</div>
+        <div class="ps-desc">扫码即用，无需下载，轻量化入口</div>
+      </div>
+      <div class="ps d2">
+        <div class="ps-node">👑</div>
+        <div class="ps-num">Step 02</div>
+        <div class="ps-title">选择头饰系列</div>
+        <div class="ps-desc">三大系列自由挑选心仪款式</div>
+      </div>
+      <div class="ps d3">
+        <div class="ps-node">🤳</div>
+        <div class="ps-num">Step 03</div>
+        <div class="ps-title">拍摄或上传</div>
+        <div class="ps-desc">实时镜头虚拟试戴或上传照片</div>
+      </div>
+      <div class="ps d4">
+        <div class="ps-node">✨</div>
+        <div class="ps-num">Step 04</div>
+        <div class="ps-title">AI生成古风像</div>
+        <div class="ps-desc">AIGC生成独一无二的古风形象</div>
+      </div>
+      <div class="ps d5">
+        <div class="ps-node">🖼</div>
+        <div class="ps-num">Step 05</div>
+        <div class="ps-title">即时打印留念</div>
+        <div class="ps-desc">1分钟内获得实体照，可分享社交</div>
+      </div>
+    </div>
+
+    <div class="demo-wrap">
+      <div class="reveal d1">
+        <div class="device-frame">
+          <div class="d-notch"></div>
+          <div class="d-screen">
+            <div class="d-screen-title">数字梳妆镜</div>
+            <div class="d-preview">
+              <div class="d-glow">👑</div>
+            </div>
+            <div class="d-opts">
+              <div class="d-opt" style="border-color:rgba(42,107,92,0.4);color:#3d9e88">海韵簪花</div>
+              <div class="d-opt" style="border-color:rgba(90,143,214,0.4);color:#5a8fd6">辽南点翠</div>
+              <div class="d-opt" style="border-color:rgba(192,57,43,0.4);color:#c0392b">连理华冠</div>
+              <div class="d-opt">自定义风格</div>
+            </div>
+            <div class="d-action">生成古风形象 →</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-text reveal d2">
+        <h3 class="demo-title">科技与文化的<br><span style="color:var(--gold)">完美融合</span></h3>
+        <div class="demo-feats">
+          <div class="df">
+            <div class="df-icon">⚡</div>
+            <div>
+              <div class="df-title">极速生成</div>
+              <div class="df-desc">从拍摄到生成高质量成品，全程控制在3分钟以内，完美满足旅游场景"即时满足"需求</div>
+            </div>
+          </div>
+          <div class="df">
+            <div class="df-icon">🎯</div>
+            <div>
+              <div class="df-title">非模板化个性生成</div>
+              <div class="df-desc">AIGC引擎根据每张用户照片的构图、光线、姿态智能调整，每张照片都是独一无二的艺术品</div>
+            </div>
+          </div>
+          <div class="df">
+            <div class="df-icon">📚</div>
+            <div>
+              <div class="df-title">文化故事赋能</div>
+              <div class="df-desc">扫码了解头饰背后的历史渊源与非遗工艺故事，让纪念品从"物质消费"升级为"意义消费"</div>
+            </div>
+          </div>
+          <div class="df">
+            <div class="df-icon">🔗</div>
+            <div>
+              <div class="df-title">线上线下无缝联动</div>
+              <div class="df-desc">小程序与热敏打印机自研跨端协议对接，数字体验与实体出片完美结合</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="section-header reveal">
+    <div class="sec-tag">OUR TEAM</div>
+    <h2 class="sec-title">项目团队</h2>
+    <p class="sec-desc">来自东北财经大学的跨学科团队，横跨经济管理、人工智能与数字创新多个领域</p>
+    <div class="divider"></div>
+  </div>
+  <div class="team-grid reveal">
+    <div class="tc">
+      <div class="tc-avatar">高</div>
+      <div class="tc-name">高子涵</div>
+      <div class="tc-id">负责人 · 2025211297</div>
+      <div class="tc-college">经济学院</div>
+      <div class="tc-major">经济学</div>
+    </div>
+    <div class="tc">
+      <div class="tc-avatar">李</div>
+      <div class="tc-name">李嘉桐</div>
+      <div class="tc-id">成员 · 2025212254</div>
+      <div class="tc-college">国际商学院</div>
+      <div class="tc-major">金融学（中英合作）</div>
+    </div>
+    <div class="tc">
+      <div class="tc-avatar">许</div>
+      <div class="tc-name">许兆嘉</div>
+      <div class="tc-id">成员 · 2025210618</div>
+      <div class="tc-college">国际商学院</div>
+      <div class="tc-major">会计学</div>
+    </div>
+    <div class="tc">
+      <div class="tc-avatar">陈</div>
+      <div class="tc-name">陈卓雨潼</div>
+      <div class="tc-id">成员 · 2025212054</div>
+      <div class="tc-college">萨里国际学院</div>
+      <div class="tc-major">工商管理</div>
+    </div>
+    <div class="tc">
+      <div class="tc-avatar">王</div>
+      <div class="tc-name">王泽铭</div>
+      <div class="tc-id">成员 · 2025210539</div>
+      <div class="tc-college">萨里国际学院</div>
+      <div class="tc-major">财务管理</div>
+    </div>
+  </div>
+  <div class="adv-title reveal">指导教师</div>
+  <div class="adv-row reveal">
+    <div class="av">
+      <div class="av-avatar">屈</div>
+      <div>
+        <div class="av-name">屈超</div>
+        <div class="av-tit">副教授 · 副院长</div>
+        <div class="av-dept">创新创业学院</div>
+      </div>
+    </div>
+    <div class="av">
+      <div class="av-avatar">姜</div>
+      <div>
+        <div class="av-name">姜明</div>
+        <div class="av-tit">教授 · 系主任</div>
+        <div class="av-dept">数据科学与人工智能学院</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="reveal">
+      <div class="sec-tag" style="margin-bottom:14px;">GET IN TOUCH</div>
+      <h2 class="contact-title"><span class="gold">联系</span>我们</h2>
+      <div class="contact-sub">Reach Out · Collaborate · Co-create</div>
+    </div>
+    <div class="contact-details reveal d1">
+      <div class="ci">
+        <span class="ci-icon">✉</span>
+        <a href="mailto:13909851623@163.com">13909851623@163.com</a>
+      </div>
+      <div class="ci">
+        <span class="ci-icon">📞</span>
+        <span>139-0985-1623</span>
+      </div>
+      <div class="ci">
+        <span class="ci-icon">🏛</span>
+        <span>东北财经大学 · 大连 · 大学生创新创业训练计划项目</span>
+      </div>
+    </div>
+    <div class="contact-social reveal d2">
+      <a href="#" class="sb">📱 微信公众号</a>
+      <a href="#" class="sb">📖 小红书</a>
+      <a href="#" class="sb">🎵 抖音</a>
+    </div>
+    <div class="reveal d3">
+      <a href="mailto:13909851623@163.com" class="btn-primary" style="letter-spacing:4px;padding:15px 48px;">立即联系 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-left">
+    <span class="foot-logo">冠绝连理</span>
+    <div class="foot-sep"></div>
+    <span class="foot-copy">© 2026 东北财经大学创新创业团队</span>
+  </div>
+  <div class="foot-r">AIGC · 非遗数字化 · 沉浸式旅拍</div>
+</footer>
+
+<script>
+// Cursor
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  dot.style.left=mx+'px';dot.style.top=my+'px';
+});
+(function animRing(){
+  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a,button,.series-card,.tn,.seg,.tc,.av').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='46px';ring.style.height='46px';ring.style.borderColor='rgba(201,160,64,0.85)';});
+  el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.borderColor='rgba(201,160,64,0.5)';});
+});
+
+// Particles
+const pc = document.getElementById('particles');
+for(let i=0;i<28;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  p.style.left=Math.random()*100+'%';
+  p.style.animationDuration=(8+Math.random()*14)+'s';
+  p.style.animationDelay=(Math.random()*12)+'s';
+  const s=(1+Math.random()*2)+'px';
+  p.style.width=s;p.style.height=s;
+  pc.appendChild(p);
+}
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Phase accordion
+function togglePhase(el){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Navbar shadow on scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').style.boxShadow=
+    window.scrollY>60?'0 4px 40px rgba(0,0,0,0.6)':'none';
+});
+</script>
+</body>
+</html>
