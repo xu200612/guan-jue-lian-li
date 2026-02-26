@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冠绝连理 | AIGC非遗头饰沉浸式旅拍</title>
+
+<style>
+body{
+    margin:0;
+    font-family: "Microsoft YaHei", sans-serif;
+    background: #f8f6f3;
+    color:#333;
+}
+header{
+    background: linear-gradient(135deg,#8b0000,#c9a227);
+    color:white;
+    padding:60px 20px;
+    text-align:center;
+}
+section{
+    padding:50px 20px;
+    text-align:center;
+}
+h2{
+    color:#8b0000;
+}
+button{
+    padding:12px 25px;
+    background:#c9a227;
+    border:none;
+    color:white;
+    font-size:16px;
+    border-radius:8px;
+    cursor:pointer;
+}
+button:hover{
+    background:#a8821f;
+}
+.card{
+    background:white;
+    padding:20px;
+    margin:15px auto;
+    max-width:500px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+footer{
+    background:#222;
+    color:white;
+    padding:20px;
+}
+img{
+    max-width:100%;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>冠绝连理</h1>
+    <p>AIGC赋能非遗头饰沉浸式旅拍体验</p>
+    <button onclick="scrollToSection()">立即体验</button>
+</header>
+
+<section id="about">
+    <h2>项目简介</h2>
+    <p>
+        冠绝连理是一项结合AI生成技术与非遗头饰文化的创新旅拍体验。
+        通过智能生成算法，实现沉浸式古风影像创作，
+        让传统文化以数字形式焕发新生。
+    </p>
+</section>
+
+<section id="experience">
+    <h2>AI生成体验演示</h2>
+    <div class="card">
+        <p>上传照片（演示模式）</p>
+        <input type="file" id="upload">
+        <br><br>
+        <button onclick="generate()">生成古风形象</button>
+        <br><br>
+        <img id="result" src="" style="display:none;">
+    </div>
+</section>
+
+<section>
+    <h2>用户反馈</h2>
+    <div class="card">
+        ⭐⭐⭐⭐⭐  
+        <p>“体验非常有新意，古风造型很好看！”</p>
+    </div>
+    <div class="card">
+        ⭐⭐⭐⭐⭐  
+        <p>“没想到AI也可以赋能非遗文化！”</p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 冠绝连理 AIGC非遗头饰项目</p>
+</footer>
+
+<script>
+function scrollToSection(){
+    document.getElementById("experience").scrollIntoView({behavior:"smooth"});
+}
+
+function generate(){
+    // 模拟AI生成
+    let result = document.getElementById("result");
+    result.src = "https://picsum.photos/500/600";
+    result.style.display = "block";
+    alert("AI生成成功！（演示版本）");
+}
+</script>
+
+</body>
+</html>
