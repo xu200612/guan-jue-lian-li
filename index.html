@@ -760,27 +760,163 @@ footer {
 .foot-copy { font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;color:var(--text-muted); }
 .foot-r { font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(154,138,118,0.4); }
 .foot-left { display:flex;align-items:center;gap:14px; }
+/* ========== 页面加载器 ========== */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  background: var(--ink);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 24px;
+  transition: opacity 0.6s, visibility 0.6s;
+}
+.page-loader.hidden { opacity: 0; visibility: hidden; }
+.loader-logo {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 48px;
+  color: var(--gold);
+  animation: loaderPulse 1.5s ease-in-out infinite;
+}
+@keyframes loaderPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+.loader-bar {
+  width: 200px; height: 2px;
+  background: rgba(201,160,64,0.2);
+  border-radius: 2px; overflow: hidden;
+}
+.loader-progress {
+  height: 100%; background: var(--gold);
+  animation: loadProgress 1.8s ease-out forwards;
+}
+@keyframes loadProgress {
+  0% { width: 0; } 100% { width: 100%; }
+}
+.loader-text {
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px; letter-spacing: 4px;
+  color: var(--text-muted); text-transform: uppercase;
+}
+
+/* ========== 移动端菜单 ========== */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px; cursor: pointer; padding: 10px;
+}
+.nav-toggle span {
+  width: 24px; height: 2px;
+  background: var(--gold);
+  transition: all 0.3s;
+}
+.nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+.mobile-menu {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(13,10,8,0.98);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 24px;
+  opacity: 0; visibility: hidden;
+  transition: all 0.4s;
+}
+.mobile-menu.active { opacity: 1; visibility: visible; }
+.mobile-menu a {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 24px; color: var(--paper);
+  text-decoration: none; letter-spacing: 6px;
+  opacity: 0; transform: translateY(20px);
+  transition: all 0.4s;
+}
+.mobile-menu.active a { opacity: 1; transform: translateY(0); }
+.mobile-menu a:nth-child(1) { transition-delay: 0.1s; }
+.mobile-menu a:nth-child(2) { transition-delay: 0.15s; }
+.mobile-menu a:nth-child(3) { transition-delay: 0.2s; }
+.mobile-menu a:nth-child(4) { transition-delay: 0.25s; }
+.mobile-menu a:nth-child(5) { transition-delay: 0.3s; }
+.mobile-menu a:nth-child(6) { transition-delay: 0.35s; }
+.mobile-menu a:nth-child(7) { transition-delay: 0.4s; }
+.mobile-menu a:hover { color: var(--gold); }
+
+/* ========== 回到顶部 ========== */
+.back-to-top {
+  position: fixed; bottom: 40px; right: 40px;
+  width: 50px; height: 50px;
+  background: rgba(201,160,64,0.1);
+  border: 1px solid var(--gold-dim);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 900;
+  opacity: 0; visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s;
+}
+.back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+.back-to-top:hover {
+  background: rgba(201,160,64,0.2);
+  border-color: var(--gold);
+  transform: translateY(-4px);
+}
+.back-to-top svg { width: 20px; height: 20px; stroke: var(--gold); }
+
+/* ========== 导航滚动状态 ========== */
+nav.scrolled { height: 64px; background: rgba(13,10,8,0.95); }
+.nav-links a.active { color: var(--gold); }
+.nav-links a.active::after { width: 100%; }
+
+/* ========== 增强悬停效果 ========== */
+.flow-step:hover .flow-num {
+  background: rgba(201,160,64,0.15);
+  border-color: var(--gold);
+  transform: scale(1.1);
+}
+.series-card:hover .sc-icon { transform: scale(1.15) rotate(5deg); }
+.ms:hover { transform: translateY(-4px); }
+.tn:hover { transform: translateY(-4px); }
+.seg:hover .seg-emoji { transform: scale(1.2) rotate(5deg); }
+.ps:hover .ps-node { transform: scale(1.1); }
+.df:hover { transform: translateX(8px); }
+.df:hover .df-icon { border-color: var(--gold); background: rgba(201,160,64,0.1); }
 
 @media(max-width:1024px){
-  nav{padding:0 20px;}
-  .nav-links{display:none;}
-  #hero,#about,#series,#technology,#market,#experience,#team,#contact{padding:80px 20px;}
-  .hero-content{padding:0 20px;}
-  .hero-visual{display:none;}
-  .hero-stats{padding:14px 20px;gap:20px;}
-  .about-grid,.tech-layout,.demo-wrap{grid-template-columns:1fr;gap:40px;}
-  .series-grid{grid-template-columns:1fr;}
-  .series-card{height:340px;}
-  .market-stats,.segs{grid-template-columns:1fr 1fr;}
-  .process{grid-template-columns:1fr;} .process::before{display:none;}
-  .team-grid{grid-template-columns:repeat(2,1fr);}
-  .adv-row{flex-direction:column;align-items:center;}
-  footer{flex-direction:column;gap:10px;text-align:center;}
+  .nav-toggle { display: flex; }
+  .mobile-menu { display: flex; }
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  #hero,#about,#series,#technology,#market,#experience,#team,#contact { padding: 80px 20px; }
+  .hero-content { padding: 0 20px; }
+  .hero-visual { display: none; }
+  .hero-stats { padding: 14px 20px; gap: 20px; flex-wrap: wrap; }
+  .about-grid,.tech-layout,.demo-wrap { grid-template-columns: 1fr; gap: 40px; }
+  .series-grid { grid-template-columns: 1fr; }
+  .series-card { height: 340px; }
+  .market-stats,.segs { grid-template-columns: 1fr 1fr; }
+  .process { grid-template-columns: 1fr; gap: 20px; }
+  .process::before { display: none; }
+  .team-grid { grid-template-columns: repeat(2,1fr); }
+  .adv-row { flex-direction: column; align-items: center; }
+  footer { flex-direction: column; gap: 10px; text-align: center; }
+  .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+  .cursor-dot, .cursor-ring { display: none; }
 }
+
 </style>
 </head>
 <body>
-
+<!-- 在 <body> 标签后、cursor-dot 之前添加 -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-logo">冠</div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
+  <div class="loader-text">Loading Experience</div>
+</div>
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
@@ -802,8 +938,26 @@ footer {
     <li><a href="#team">团队</a></li>
     <li><a href="#contact" class="nav-cta">联系我们</a></li>
   </ul>
+<div class="nav-toggle" id="navToggle">
+  <span></span><span></span><span></span>
+</div>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about">项目介绍</a>
+  <a href="#series">三大系列</a>
+  <a href="#technology">技术路径</a>
+  <a href="#market">市场前景</a>
+  <a href="#experience">体验流程</a>
+  <a href="#team">团队</a>
+  <a href="#contact">联系我们</a>
+</div>
 
+<!-- 在 </footer> 之后添加 -->
+<div class="back-to-top" id="backToTop">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M18 15l-6-6-6 6"/>
+  </svg>
+</div>
 <!-- HERO -->
 <section id="hero">
   <div class="hero-bg"></div>
@@ -835,23 +989,24 @@ footer {
   </div>
 
   <div class="hero-stats">
-    <div class="stat-item">
-      <span class="stat-val">1073<span style="font-size:15px">亿+</span></span>
-      <span class="stat-lbl">线上非遗成交额（2023）</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-val">400<span style="font-size:15px">亿</span></span>
-      <span class="stat-lbl">旅拍市场规模（2024）</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-val">3<span style="font-size:15px">分钟</span></span>
-      <span class="stat-lbl">AIGC极速出片</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-val">95<span style="font-size:15px">%+</span></span>
-      <span class="stat-lbl">AIGC生成成功率</span>
-    </div>
+  <div class="stat-item">
+    <span class="stat-val"><span data-target="1073" data-suffix="亿+">0</span></span>
+    <span class="stat-lbl">线上非遗成交额（2023）</span>
   </div>
+  <div class="stat-item">
+    <span class="stat-val"><span data-target="400" data-suffix="亿">0</span></span>
+    <span class="stat-lbl">旅拍市场规模（2024）</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-val"><span data-target="3" data-suffix="分钟">0</span></span>
+    <span class="stat-lbl">AIGC极速出片</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-val"><span data-target="95" data-suffix="%+">0</span></span>
+    <span class="stat-lbl">AIGC生成成功率</span>
+  </div>
+</div>
+
 
   <div class="scroll-hint">
     <div class="scroll-line"></div>
@@ -1295,14 +1450,181 @@ footer {
 
 <!-- FOOTER -->
 <footer>
-  <div class="foot-left">
-    <span class="foot-logo">冠绝连理</span>
-    <div class="foot-sep"></div>
-    <span class="foot-copy">© 2026 东北财经大学创新创业团队</span>
-  </div>
-  <div class="foot-r">AIGC · 非遗数字化 · 沉浸式旅拍</div>
-</footer>
+<script>
+// ========== 页面加载 ==========
+window.addEventListener('load', () => {
+setTimeout(() => {
+const loader = document.getElementById('pageLoader');
+if (loader) loader.classList.add('hidden');}, 2000);
+});
 
+// ========== 自定义光标 ==========
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+mx = e.clientX;
+my = e.clientY;
+if (dot) {
+dot.style.left = mx + 'px';
+dot.style.top = my + 'px';
+}
+});
+
+(function animRing() {
+rx += (mx - rx) * 0.12;
+ry += (my - ry) * 0.12;
+if (ring) {
+ring.style.left = rx + 'px';
+ring.style.top = ry + 'px';
+}
+requestAnimationFrame(animRing);
+})();
+
+// 光标悬停效果
+document.querySelectorAll('a,button,.series-card,.tn,.seg,.tc,.av,.btn-primary,.btn-outline').forEach(el => {
+el.addEventListener('mouseenter', () => {
+if (ring) {
+ring.style.width = '46px';
+ring.style.height = '46px';
+ring.style.borderColor = 'rgba(201,160,64,0.85)';
+}
+});
+el.addEventListener('mouseleave', () => {
+if (ring) {
+ring.style.width = '32px';
+ring.style.height = '32px';
+ring.style.borderColor = 'rgba(201,160,64,0.5)';
+}
+});
+});
+
+// ========== 粒子效果 ==========
+const pc = document.getElementById('particles');
+if (pc) {
+for (let i = 0; i < 28; i++) {
+const p = document.createElement('div');
+p.className = 'particle';
+p.style.left = Math.random() * 100 + '%';
+p.style.animationDuration = (8 + Math.random() * 14) + 's';
+p.style.animationDelay = (Math.random() * 12) + 's';
+const s = (1 + Math.random() * 2) + 'px';
+p.style.width = s;
+p.style.height = s;
+pc.appendChild(p);
+}
+}
+
+// ========== 滚动显示动画 ==========
+const revealObs = new IntersectionObserver(entries => {
+entries.forEach(e => {
+if (e.isIntersecting) e.target.classList.add('visible');
+});
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ========== 数字滚动动画 ==========
+function animateCount(el, target, suffix = '') {
+let current = 0;
+const increment = target / 60;
+const timer = setInterval(() => {
+current += increment;
+if (current >= target) {
+current = target;
+clearInterval(timer);
+}
+el.textContent = Math.floor(current) + suffix;
+}, 25);
+}
+
+const countObs = new IntersectionObserver(entries => {
+entries.forEach(e => {
+if (e.isIntersecting && !e.target.dataset.counted) {
+e.target.dataset.counted = 'true';
+const target = parseFloat(e.target.dataset.target);
+const suffix = e.target.dataset.suffix || '';
+animateCount(e.target, target, suffix);
+}
+});
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-target]').forEach(el => countObs.observe(el));
+
+// ========== 导航栏滚动效果 & 高亮 ==========
+const nav = document.getElementById('navbar');
+const sections = document.querySelectorAll('section[id]');
+
+window.addEventListener('scroll', () => {
+const scrollY = window.scrollY;
+
+// 导航栏样式
+if (nav) {
+nav.classList.toggle('scrolled', scrollY > 60);
+nav.style.boxShadow = scrollY > 60 ? '0 4px 40px rgba(0,0,0,0.6)' : 'none';
+}
+
+// 当前区块高亮
+sections.forEach(sec => {
+const top = sec.offsetTop - 100;
+const bottom = top + sec.offsetHeight;
+const id = sec.getAttribute('id');
+const link = document.querySelector(`.nav-links a[href="#${id}"]`);
+if (link) {
+link.classList.toggle('active', scrollY >= top && scrollY < bottom);
+}
+});
+
+// 回到顶部按钮
+const backToTop = document.getElementById('backToTop');
+if (backToTop) {
+backToTop.classList.toggle('visible', scrollY > 400);
+}
+});
+
+// ========== 回到顶部 ==========
+const backToTopBtn = document.getElementById('backToTop');
+if (backToTopBtn) {
+backToTopBtn.addEventListener('click', () => {
+window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+}
+
+// ========== 移动端菜单 ==========
+const navToggle = document.getElementById('navToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+
+if (navToggle && mobileMenu) {
+navToggle.addEventListener('click', () => {
+navToggle.classList.toggle('active');
+mobileMenu.classList.toggle('active');
+document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+});
+
+mobileMenu.querySelectorAll('a').forEach(link => {
+link.addEventListener('click', () => {
+navToggle.classList.remove('active');
+mobileMenu.classList.remove('active');
+document.body.style.overflow = '';
+});
+});
+}
+
+// ========== 技术阶段手风琴 ==========
+function togglePhase(el) {
+document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+el.classList.add('active');
+}
+
+// ========== 设备演示交互 ==========
+document.querySelectorAll('.d-opt').forEach(opt => {
+opt.addEventListener('click', function() {
+document.querySelectorAll('.d-opt').forEach(o => o.classList.remove('active'));
+this.classList.add('active');
+});
+});
+</script>
 <script>
 // Cursor
 const dot = document.getElementById('cursorDot');
